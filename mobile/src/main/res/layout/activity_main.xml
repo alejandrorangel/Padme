@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical"
+    >
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/hello_world"
+        android:id="@+id/textView"
+        android:maxLines = "2"
+        android:layout_weight="1"
+        android:scrollbars = "vertical"/>
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_weight="0"
+        android:max="4000"
+        android:progressDrawable="@drawable/progressbar" />
+</LinearLayout>
