@@ -17,6 +17,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import mx.edu.cicese.alejandro.audio.record.AudioClipListener;
+import mx.edu.cicese.alejandro.audio.record.OneDetectorManyObservers;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -96,7 +98,7 @@ public class MainActivity extends ActionBarActivity {
         audioManager.startBluetoothSco();
     }
 
-    private void startTask(root.gast.audio.record.AudioClipListener detector, String name) {
+    private void startTask(AudioClipListener detector, String name) {
         stopAll();
 
 

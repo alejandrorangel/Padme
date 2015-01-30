@@ -22,7 +22,7 @@ import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import root.gast.audio.record.AudioClipListener;
+import mx.edu.cicese.alejandro.audio.record.AudioClipListener;
 
 
 public class AudioClipLogWrapper implements AudioClipListener {

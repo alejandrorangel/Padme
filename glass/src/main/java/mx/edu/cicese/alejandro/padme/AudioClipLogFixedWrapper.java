@@ -19,14 +19,12 @@ public class AudioClipLogFixedWrapper implements AudioClipListener {
 
     private double previousFrequency = -1;
 
-    public AudioClipLogFixedWrapper(Activity context)
-    {
+    public AudioClipLogFixedWrapper(Activity context) {
         this.context = context;
     }
 
     @Override
-    public boolean heard(short[] audioData, int sampleRate)
-    {
+    public boolean heard(short[] audioData, int sampleRate) {
         final double zero = ZeroCrossing.calculate(sampleRate, audioData);
         final double volume = AudioUtil.rootMeanSquared(audioData);
 
@@ -35,14 +33,12 @@ public class AudioClipLogFixedWrapper implements AudioClipListener {
         final boolean isDifferentFromLast = Math.abs(zero - previousFrequency) > 100;
 
         final StringBuilder message = new StringBuilder();
-        message.append("volume: ").append((int)volume);
-        if (!isLoudEnough)
-        {
+        message.append("volume: ").append((int) volume);
+        if (!isLoudEnough) {
             message.append(" (silence) ");
         }
-        message.append(" freqency: ").append((int)zero);
-        if (isDifferentFromLast)
-        {
+        message.append(" freqency: ").append((int) zero);
+        if (isDifferentFromLast) {
             message.append(" (diff)");
         }
 
