@@ -2,20 +2,32 @@ package mx.edu.cicese.alejandro.padme;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.hardware.Camera;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.SurfaceView;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.glass.content.Intents;
 import com.google.android.glass.widget.CardBuilder;
 import com.google.android.glass.widget.CardScrollView;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.greenrobot.event.EventBus;
 import mx.edu.cicese.alejandro.audio.record.AudioClipListener;
 import mx.edu.cicese.alejandro.audio.record.OneDetectorManyObservers;
 
@@ -49,7 +61,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-
+        EventBus.getDefault().register(this);
         //mView = buildView();
         setContentView(R.layout.activity_main);
         log = (TextView) findViewById(R.id.textView);
@@ -96,6 +108,12 @@ public class MainActivity extends Activity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
 //        mCardScroller.activate();
@@ -110,6 +128,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onDestroy() {
         stopAll();
+        EventBus.getDefault().unregister(this);
         super.onDestroy();
     }
 
@@ -171,4 +190,60 @@ public class MainActivity extends Activity {
         return audioLogger;
     }
 
+    public void onEventMainThread(AudioClipLogWrapper event) {
+        log.setText(event.toString());
+    }
+
+    public void onEvent(AudioClipLogWrapper event) {
+        if (event.photo) {
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    takePicture();
+                }
+            });
+        }
+        event.photo = false;
+    }
+
+    private void takePicture() {
+        Camera c = null;
+
+        Camera.ShutterCallback shutterCallback = new Camera.ShutterCallback() {
+            public void onShutter() {
+                // Just do nothing.
+            }
+        };
+
+        Camera.PictureCallback rawPictureCallback = new Camera.PictureCallback() {
+            public void onPictureTaken(byte[] arg0, Camera arg1) {
+                // Just do nothing.
+            }
+        };
+
+        Camera.PictureCallback jpegPictureCallback = new Camera.PictureCallback() {
+            public void onPictureTaken(byte[] data, Camera arg1) {
+                // Save the picture.
+                try {
+                    Time now = new Time();
+
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+                    FileOutputStream out = new FileOutputStream(new File(Intents.EXTRA_PICTURE_FILE_PATH + now.toString()));
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        try {
+            c = Camera.open();
+            SurfaceView view = new SurfaceView(this);
+            c.setPreviewDisplay(view.getHolder());
+            c.startPreview();
+            c.takePicture(null, null, jpegPictureCallback);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -22,24 +22,21 @@ import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import de.greenrobot.event.EventBus;
 import mx.edu.cicese.alejandro.audio.record.AudioClipListener;
+import mx.edu.cicese.alejandro.audio.util.AudioUtil;
 
 
 public class AudioClipLogWrapper implements AudioClipListener {
     private static final String TAG = "Voice Tracker";
-
+    public boolean photo;
     private TextView log;
-
     private ProgressBar progressBar;
-
     private Activity context;
-
     private double averageVolume;
-
+    private double currentVolume;
     private double lowPassAlpha = 0.5;
-
     private double STARTING_AVERAGE = 200.0;
-
     private double INCREASE_FACTOR = 5.0;
 
 
@@ -53,7 +50,7 @@ public class AudioClipLogWrapper implements AudioClipListener {
     @Override
     public boolean heard(short[] audioData, int sampleRate) {
 
-        final double currentVolume = rootMeanSquared(audioData);
+        currentVolume = AudioUtil.rootMeanSquared(audioData);
 
         double volumeThreshold = averageVolume * INCREASE_FACTOR;
 
@@ -65,8 +62,9 @@ public class AudioClipLogWrapper implements AudioClipListener {
 
         if (currentVolume > volumeThreshold) {
             Log.e(TAG, "Alto");
-
+            photo = true;
             message.append(" (Alto) ");
+
             PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
             PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.FULL_WAKE_LOCK, "Wake Lock");
             if (powerManager.isScreenOn() == false) {
@@ -79,20 +77,32 @@ public class AudioClipLogWrapper implements AudioClipListener {
             averageVolume = lowPass(currentVolume, averageVolume);
         }
 
+        /*
         context.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 AudioTaskUtil.appendToStartOfLog(log, message.toString());
             }
         });
+        */
         context.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 AudioTaskUtil.updateProgressBar(progressBar, currentVolume);
             }
         });
+        EventBus.getDefault().post(this);
+
 
         return false;
+    }
+
+    public double getAverageVolume() {
+        return averageVolume;
+    }
+
+    public double getCurrentVolume() {
+        return currentVolume;
     }
 
 
@@ -100,13 +110,9 @@ public class AudioClipLogWrapper implements AudioClipListener {
         return last * (1.0 - lowPassAlpha) + current * lowPassAlpha;
     }
 
-    private double rootMeanSquared(short[] nums) {
-        double ms = 0;
-        for (int i = 0; i < nums.length; i++) {
-            ms += nums[i] * nums[i];
-        }
-        ms /= nums.length;
-        return Math.sqrt(ms);
-    }
 
+    @Override
+    public String toString() {
+        return String.valueOf(getCurrentVolume());
+    }
 }
