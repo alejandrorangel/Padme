@@ -19,9 +19,8 @@
             android:icon="@drawable/ic_glass_logo"
             android:label="@string/title_activity_main">
             <intent-filter>
-                <action android:name="com.google.android.glass.action.VOICE_TRIGGER" />
+            <action android:name="com.google.android.glass.action.VOICE_TRIGGER" />
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
@@ -29,6 +28,10 @@
                 android:name="com.google.android.glass.VoiceTrigger"
                 android:resource="@xml/voice_trigger" />
         </activity>
+        <activity
+            android:name=".MessegeActivity"
+            android:icon="@drawable/ic_glass_logo"
+            android:label="@string/title_activity_messege"></activity>
     </application>
 
 </manifest>

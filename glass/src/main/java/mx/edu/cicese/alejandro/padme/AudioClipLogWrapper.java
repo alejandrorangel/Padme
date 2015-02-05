@@ -15,12 +15,9 @@
  */
 package mx.edu.cicese.alejandro.padme;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.PowerManager;
 import android.util.Log;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import de.greenrobot.event.EventBus;
 import mx.edu.cicese.alejandro.audio.record.AudioClipListener;
@@ -30,9 +27,7 @@ import mx.edu.cicese.alejandro.audio.util.AudioUtil;
 public class AudioClipLogWrapper implements AudioClipListener {
     private static final String TAG = "Voice Tracker";
     public boolean photo;
-    private TextView log;
-    private ProgressBar progressBar;
-    private Activity context;
+    private Context context;
     private double averageVolume;
     private double currentVolume;
     private double lowPassAlpha = 0.5;
@@ -40,9 +35,7 @@ public class AudioClipLogWrapper implements AudioClipListener {
     private double INCREASE_FACTOR = 5.0;
 
 
-    public AudioClipLogWrapper(TextView log, ProgressBar progressBar, Activity context) {
-        this.log = log;
-        this.progressBar =  progressBar;
+    public AudioClipLogWrapper(Context context) {
         this.context = context;
         averageVolume = STARTING_AVERAGE;
     }
@@ -57,42 +50,14 @@ public class AudioClipLogWrapper implements AudioClipListener {
         Log.d(TAG, "actual: " + currentVolume + " promedio: " + averageVolume
                 + " threshold: " + volumeThreshold);
 
-        final StringBuilder message = new StringBuilder();
-        message.append("volume: ").append((int) currentVolume);
-
         if (currentVolume > volumeThreshold) {
-            Log.e(TAG, "Alto");
             photo = true;
-            message.append(" (Alto) ");
+            turnOnScreen();
 
-            PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-            PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.FULL_WAKE_LOCK, "Wake Lock");
-            if (powerManager.isScreenOn() == false) {
-                wakeLock.acquire();
-            }
-            if (wakeLock.isHeld()) {
-                wakeLock.release();
-            }
         } else {
             averageVolume = lowPass(currentVolume, averageVolume);
         }
-
-        /*
-        context.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                AudioTaskUtil.appendToStartOfLog(log, message.toString());
-            }
-        });
-        */
-        context.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                AudioTaskUtil.updateProgressBar(progressBar, currentVolume);
-            }
-        });
         EventBus.getDefault().post(this);
-
 
         return false;
     }
@@ -110,6 +75,16 @@ public class AudioClipLogWrapper implements AudioClipListener {
         return last * (1.0 - lowPassAlpha) + current * lowPassAlpha;
     }
 
+    public void turnOnScreen() {
+        PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.FULL_WAKE_LOCK, "Wake Lock");
+        if (powerManager.isScreenOn() == false) {
+            wakeLock.acquire();
+        }
+        if (wakeLock.isHeld()) {
+            wakeLock.release();
+        }
+    }
 
     @Override
     public String toString() {

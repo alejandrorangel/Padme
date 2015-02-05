@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#ff000000">
 
     <RelativeLayout
         android:id="@+id/body_layout"
@@ -14,15 +15,47 @@
         android:layout_marginTop="@dimen/glass_card_margin"
         tools:ignore="UselessLeaf">
 
-        <TextView
-            android:id="@+id/textView"
+        <ImageView
+            android:id="@+id/speaker"
+            android:layout_width="100dp"
+            android:layout_height="120dp"
+            android:layout_weight="0"
+            android:src="@drawable/speaker" />
+
+        <FrameLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:maxLines="2"
-            android:scrollbars="vertical"
-            android:text="@string/hello_world"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:layout_height="120dp"
+            android:layout_toEndOf="@id/speaker">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:max="1000"
+                    android:progressDrawable="@drawable/progressbar" />
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <ImageView
+                    android:id="@+id/scale"
+                    android:layout_width="fill_parent"
+                    android:layout_height="120dp"
+                    android:layout_weight="0"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/scale" />
+            </RelativeLayout>
+        </FrameLayout>
+
 
     </RelativeLayout>
 
@@ -40,15 +73,15 @@
              timestamp view keeps a fixed width. If the footer text is too long, it
              will be ellipsized with a 40px margin between it and the timestamp. -->
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyleHorizontal"
+        <TextView
+            android:id="@+id/textView"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:layout_weight="0"
-            android:max="800"
-            android:progressDrawable="@drawable/progressbar" />
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:maxLines="1"
+            android:scrollbars="vertical"
+            android:text="@string/hello_world"
+            android:textAppearance="?android:attr/textAppearance" />
 
         <TextView
             android:id="@+id/timestamp"

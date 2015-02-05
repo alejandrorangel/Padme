@@ -1,5 +1,29 @@
 <resources>
     <string name="app_name">Padme</string>
-    <string name="title_activity_main">Hello World Immersion</string>
+    <string name="title_activity_main">Voice Tracker</string>
     <string name="hello_world">Hello world!</string>
+    <string name="title_activity_messege">Hello World Immersion</string>
+
+
+    <string-array name="voice_tier1">
+        <item>string 1</item>
+        <item>string 2</item>
+        <item>string 3</item>
+        <item>string 4</item>
+        <item>string 5</item>
+    </string-array>
+    <string-array name="voice_tier2">
+        <item>string 1</item>
+        <item>string 2</item>
+        <item>string 3</item>
+        <item>string 4</item>
+        <item>string 5</item>
+    </string-array>
+    <string-array name="prosody_tier1">
+        <item>string 1</item>
+        <item>string 2</item>
+        <item>string 3</item>
+        <item>string 4</item>
+        <item>string 5</item>
+    </string-array>
 </resources>
