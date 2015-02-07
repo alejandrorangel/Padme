@@ -3,8 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#ff000000">
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:id="@+id/body_layout"
@@ -52,7 +51,7 @@
                     android:layout_height="120dp"
                     android:layout_weight="0"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/scale" />
+                    android:src="@drawable/volumen" />
             </RelativeLayout>
         </FrameLayout>
 
